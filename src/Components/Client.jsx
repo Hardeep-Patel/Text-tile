@@ -2,41 +2,45 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
-import API from '../Components/Process'
+import API from '../Components/Process';
 
 const Client = () => {
-  const [clients, setClients] = useState([]); // Store client data
-  const [isLoading, setIsLoading] = useState(true); // Loader state
-  const [isSubmitting, setIsSubmitting] = useState(false); // Loader for form submission
-  const [showModal, setShowModal] = useState(false); // Toggle form visibility
+  const [clients, setClients] = useState([]);
+  const [companies, setCompanies] = useState([]); // Store companies
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+
   const [formData, setFormData] = useState({
-    CompanyID: "",
+    CompanyID: "", // Store CompanyID instead of CompanyName
     ClientName: "",
     PhoneNo: "",
     Email: "",
     Address: "",
   });
 
-  const token = Cookies.get("UserID"); // Get token from cookies
+  const token = Cookies.get("UserID");
 
-  // Fetch client data from API
+  // Fetch Clients & Companies
   useEffect(() => {
-    const fetchClients = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${API}Client/getClient`
-        );
-        setClients(response.data.data);
+        const [clientRes, companyRes] = await Promise.all([
+          axios.get(`${API}Client/getClient`),
+          axios.get(`${API}Company/getCompany`) // Fetch company data
+        ]);
+        setClients(clientRes.data.data);
+        setCompanies(companyRes.data.data); // Store company list
       } catch (error) {
-        console.error("Error fetching clients:", error);
+        console.error("Error fetching data:", error);
       } finally {
-        setIsLoading(false); // Hide loader when data is loaded
+        setIsLoading(false);
       }
     };
-    fetchClients();
+    fetchData();
   }, []);
 
-  // Handle form input change
+  // Handle input change
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -44,27 +48,21 @@ const Client = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true); // Show loader in button
+    setIsSubmitting(true);
     try {
-      await axios.post(
-        `${API}Client/setClient`,
-        formData
-      );
+      await axios.post(`${API}Client/setClient`, formData);
       Swal.fire("Success", "Client added successfully!", "success");
       setShowModal(false);
       setFormData({ CompanyID: "", ClientName: "", PhoneNo: "", Email: "", Address: "" });
 
       // Refresh client list
-      setIsLoading(true);
-      const response = await axios.get(
-        `${API}Client/getClient`
-      );
+      const response = await axios.get(`${API}Client/getClient`);
       setClients(response.data.data);
     } catch (error) {
       Swal.fire("Error", "Failed to add client", "error");
       console.error("Error adding client:", error);
     } finally {
-      setIsSubmitting(false); // Hide loader
+      setIsSubmitting(false);
       setIsLoading(false);
     }
   };
@@ -95,7 +93,7 @@ const Client = () => {
                 <thead>
                   <tr className="bg-gray-200">
                     <th className="border p-2">Client ID</th>
-                    <th className="border p-2">Company ID</th>
+                    <th className="border p-2">Company Name</th>
                     <th className="border p-2">Client Name</th>
                     <th className="border p-2">Phone No</th>
                     <th className="border p-2">Email</th>
@@ -107,7 +105,7 @@ const Client = () => {
                   {clients.map((client) => (
                     <tr key={client.ClientID} className="text-center">
                       <td className="border p-2">{client.ClientID}</td>
-                      <td className="border p-2">{client.CompanyID}</td>
+                      <td className="border p-2">{client.CompanyName}</td>
                       <td className="border p-2">{client.ClientName}</td>
                       <td className="border p-2">{client.PhoneNo}</td>
                       <td className="border p-2">{client.Email}</td>
@@ -130,15 +128,23 @@ const Client = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-lg font-semibold mb-4">Add Client</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <input
-                type="text"
+              
+              {/* Dropdown for Company Selection */}
+              <select
                 name="CompanyID"
-                placeholder="Company ID"
                 value={formData.CompanyID}
                 onChange={handleChange}
                 className="w-full border p-2 rounded"
                 required
-              />
+              >
+                <option value="">Select Company</option>
+                {companies.map((company) => (
+                  <option key={company.CompanyID} value={company.CompanyID}>
+                    {company.CompanyName}
+                  </option>
+                ))}
+              </select>
+
               <input
                 type="text"
                 name="ClientName"
