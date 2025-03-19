@@ -11,6 +11,7 @@ const Header = () => {
   // Get username from cookies
   var Username = Cookies.get("Username") || "Guest";
   var firstLetter = Username.charAt(0);
+  console.log("object")
 
   const handleLogout = () => {
     Cookies.remove("UserID");
