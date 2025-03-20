@@ -90,12 +90,22 @@ export default function Login() {
           <div>
             <label className="block text-sm font-medium text-gray-700">Password</label>
             <input
-              type="Password"
+              type="password"
               placeholder="Enter your Password"
               value={Password}
               onChange={(e) => setPassword(e.target.value)}
               className="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+              minLength="6"
+              maxLength="20"
+              pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$"
+              title="Password must be between 6-20 characters and include at least one letter and one number."
             />
+            <small className="text-red-500">
+              {Password && !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/.test(Password) &&
+                "Password must be between 6-20 characters and include at least one letter and one number."}
+            </small>
+
           </div>
           <button
             type="submit"
