@@ -1,15 +1,14 @@
-import Cookies from "js-cookie";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
 
-const Header = () => {
+const UserHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   // Get username from cookies
-  var Username = Cookies.get("Username") || "Guest";
-  var firstLetter = Username.charAt(0);
+  const Username = Cookies.get("Username") || "Guest";
+  const firstLetter = Username.charAt(0);
 
   const handleLogout = () => {
     Cookies.remove("UserID");
@@ -19,8 +18,8 @@ const Header = () => {
   };
 
   return (
-    <div className="bg-gray-800 flex justify-between items-center px-6 py-4">
-      {/* Left Side - Hamburger Menu (Mobile Only) */}
+    <div className="bg-blue-600 flex justify-between items-center px-6 py-4">
+      {/* Hamburger Menu (Mobile) */}
       <button
         className="md:hidden text-white text-2xl"
         onClick={() => setMenuOpen(!menuOpen)}
@@ -28,46 +27,37 @@ const Header = () => {
         {menuOpen ? "✖" : "☰"}
       </button>
 
-      {/* Center - Navigation Menu */}
+      {/* Navigation Links */}
       <div
-        className={`absolute md:static top-16 left-0 w-full md:w-auto bg-gray-900 md:bg-transparent flex justify-center md:flex md:items-center ${
+        className={`absolute md:static top-16 left-0 w-full md:w-auto bg-blue-700 md:bg-transparent flex justify-center md:flex md:items-center ${
           menuOpen ? "block" : "hidden"
         }`}
       >
         <ul className="flex flex-col md:flex-row md:space-x-6 text-center">
-        <li className="menu-item">
+          <li>
             <NavLink
-              to="/dashboard"
+              to="/home"
               className="text-white hover:text-gray-300 px-4 py-2 block"
               onClick={() => setMenuOpen(false)}
             >
-              AdminDashboard
+              Home
             </NavLink>
           </li>
-          <li className="menu-item">
+          <li>
             <NavLink
-              to="/dashboard/Company"
+              to="/profile"
               className="text-white hover:text-gray-300 px-4 py-2 block"
               onClick={() => setMenuOpen(false)}
             >
-              Company
-            </NavLink>
-          </li>
-          <li className="menu-item">
-            <NavLink
-              to="/dashboard/Client"
-              className="text-white hover:text-gray-300 px-4 py-2 block"
-              onClick={() => setMenuOpen(false)}
-            >
-              Clients
+              Profile
             </NavLink>
           </li>
         </ul>
       </div>
 
-      {/* Right Side - User Info & Logout Button */}
+      {/* User Info & Logout */}
       <div className="flex items-center space-x-3">
-        <div className="bg-blue-600 text-white w-8 h-8 flex items-center justify-center rounded-full text-lg font-semibold">
+        <div className="bg-white text-blue-600 w-8 h-8 flex items-center justify-center rounded-full text-lg font-semibold">
           {firstLetter}
         </div>
         <span className="text-white font-medium hidden md:block">{Username}</span>
@@ -82,4 +72,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default UserHeader;

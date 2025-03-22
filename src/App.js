@@ -5,6 +5,10 @@ import Header from './Components/Header';
 import Company from './Components/Company';
 import Client from './Components/Client';
 import PrivateRoute from './ProtectedRoute/PrivateRoute';
+import AdminDashboard from './Components/AdminDashboard';
+import UserHome from './Components/userside/UserHome';
+// import UserLogin from "./Components/userside/UserLogin";
+
 
 function App() {
   return (
@@ -16,18 +20,34 @@ function App() {
         {/* Protected Routes */}
         <Route path="/dashboard/*" element={<PrivateRoute />}>
           <Route
-            path="*"
+            path=""
+            element={
+              <>
+                <AdminDashboard />  {/* Show Admin Dashboard as default */}
+              </>
+            }
+          />
+          <Route
+            path="Company"
             element={
               <>
                 <Header />
-                <Routes>
-                  <Route path="Company" element={<Company />} />
-                  <Route path="Client" element={<Client />} />
-                </Routes>
+                <Company />
+              </>
+            }
+          />
+          <Route
+            path="Client"
+            element={
+              <>
+                <Header />
+                <Client />
               </>
             }
           />
         </Route>
+        <Route path="/user/home" element={<UserHome />} />
+        {/* <Route path="/userlogin" element={<UserLogin />} /> */}
       </Routes>
     </BrowserRouter>
   );

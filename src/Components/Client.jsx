@@ -12,7 +12,6 @@ const Client = () => {
   const [showModal, setShowModal] = useState(false);
   const [users, setUsers] = useState([]);
 
-
   const [formData, setFormData] = useState({
     CompanyID: "",
     ClientName: "",
@@ -258,30 +257,24 @@ const Client = () => {
                 />
               </div>
 
-              {/* Show Username dropdown only when adding a client */}
+              {/* Show Username input only when adding a client */}
               {!formData.ClientID && (
                 <div>
                   <label htmlFor="Username" className="block font-medium">
-                    Select Username
+                    Enter Username
                   </label>
-                  <select
+                  <input
+                    type="text"
                     id="Username"
                     name="Username"
                     value={formData.Username}
                     onChange={handleChange}
                     required
                     className="w-full border p-2 rounded"
-                  >
-                    <option value="">-- Select Username --</option>
-                    {users.map((user) => (
-                      <option key={user.UserID} value={user.Username}>
-                        {user.Username}
-                      </option>
-                    ))}
-                  </select>
+                    placeholder="Enter Username"
+                  />
                 </div>
               )}
-
 
               <div>
                 <label htmlFor="PhoneNo" className="block font-medium">
@@ -368,8 +361,8 @@ const Client = () => {
                   {isSubmitting
                     ? "Saving..."
                     : formData.ClientID
-                      ? "Update Client"
-                      : "Add Client"}
+                    ? "Update Client"
+                    : "Add Client"}
                 </button>
               </div>
             </form>

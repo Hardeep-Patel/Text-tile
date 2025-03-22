@@ -3,14 +3,14 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import Cookies from "js-cookie";
 import API from '../Components/Process'
-
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 export default function Login() {
   const [Username, setUsername] = useState("");
   const [Password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
+  const [showPassword, setShowPassword] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -88,25 +88,32 @@ export default function Login() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">Password</label>
-            <input
-              type="password"
-              placeholder="Enter your Password"
-              value={Password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
-              required
-              minLength="6"
-              maxLength="20"
-              pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$"
-              title="Password must be between 6-20 characters and include at least one letter and one number."
-            />
-            <small className="text-red-500">
-              {Password && !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/.test(Password) &&
-                "Password must be between 6-20 characters and include at least one letter and one number."}
-            </small>
-
-          </div>
+  <label className="block text-sm font-medium text-gray-700">Password</label>
+  <div className="relative">
+    <input
+      type={showPassword ? "text" : "password"} // Toggle password visibility
+      placeholder="Enter your Password"
+      value={Password}
+      onChange={(e) => setPassword(e.target.value)}
+      className="w-full mt-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 pr-10"
+      required
+      minLength="6"
+      maxLength="20"
+      pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$"
+      title="Password must be between 6-20 characters and include at least one letter and one number."
+    />
+    <span
+      className="absolute inset-y-0 right-3 flex items-center cursor-pointer text-gray-500"
+      onClick={() => setShowPassword(!showPassword)}
+    >
+      {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+    </span>
+  </div>
+  <small className="text-red-500">
+    {Password && !/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,20}$/.test(Password) &&
+      "Password must be between 6-20 characters and include at least one letter and one number."}
+  </small>
+</div>
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition"
